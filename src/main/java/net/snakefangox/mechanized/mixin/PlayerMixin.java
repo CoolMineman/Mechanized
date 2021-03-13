@@ -3,6 +3,7 @@ package net.snakefangox.mechanized.mixin;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,7 +44,7 @@ public abstract class PlayerMixin extends LivingEntity {
 	}
 
 	@Inject(method = "handleFallDamage", at = @At("HEAD"))
-	public void onFall(float fallDistance, float damageMultiplier, CallbackInfoReturnable<Boolean> info) {
+	public void onFall(float fallDistance, float damageMultiplier, DamageSource damageSource, CallbackInfoReturnable<Boolean> info) {
 		ItemStack stack = ((PlayerEntity) (Object) this).getEquippedStack(EquipmentSlot.FEET);
 		if (!((PlayerEntity) (Object) this).world.isClient && stack.getItem() == MRegister.STEAM_EXOSUIT_BOOTS
 				&& ((SteamItem) MRegister.STEAM_EXOSUIT_BOOTS).getPressure(stack) > 0.01) {
