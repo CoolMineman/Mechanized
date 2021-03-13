@@ -102,7 +102,7 @@ public class UpgradeTableContainer extends SyncedGuiDescription {
 			ServerSidePacketRegistry.INSTANCE.sendToPlayer(player,
 					new ScreenHandlerSlotUpdateS2CPacket(syncId, slotID, stack));
 			PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
-			passedData.writeItemStack(playerInventory.getCursorStack());
+			passedData.writeItemStack(playerInventory.player.currentScreenHandler.method_34255());
 			ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, PacketIdentifiers.SYNC_CURSER_STACK, passedData);
 		}
 	}
@@ -116,9 +116,6 @@ public class UpgradeTableContainer extends SyncedGuiDescription {
 
 	public static class UpgradeListener implements ScreenHandlerListener {
 
-		@Override
-		public void onHandlerRegistered(ScreenHandler container, DefaultedList<ItemStack> defaultedList) {
-		}
 
 		@Override
 		public void onSlotUpdate(ScreenHandler container, int slotId, ItemStack itemStack) {
@@ -138,7 +135,7 @@ public class UpgradeTableContainer extends SyncedGuiDescription {
 
 		@Override
 		public void onPropertyUpdate(ScreenHandler handler, int property, int value) {
-
+			//noop
 		}
 	}
 

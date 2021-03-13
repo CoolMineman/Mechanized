@@ -6,14 +6,14 @@ import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.EnchantingTableBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemPlacementContext;
@@ -23,7 +23,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.BooleanProperty;
@@ -35,22 +34,18 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.snakefangox.mechanized.MRegister;
 import net.snakefangox.mechanized.blocks.entity.AbstractSteamBoilerEntity;
-import net.snakefangox.mechanized.gui.AlloyFurnaceContainer;
 import net.snakefangox.mechanized.gui.SteamBoilerContainer;
 
 import java.util.Random;
-import java.util.function.Supplier;
 
-public class SteamBoiler extends Block implements BlockEntityProvider, AttributeProvider {
+public class SteamBoiler extends BlockWithEntity implements AttributeProvider {
 
 	public static final BooleanProperty LIT = Properties.LIT;
-	public final Supplier<? extends AbstractSteamBoilerEntity> beSupplier;
+	public final FabricBlockEntityTypeBuilder.Factory<? extends AbstractSteamBoilerEntity> beSupplier;
 
-	public SteamBoiler(Settings settings, Supplier<? extends AbstractSteamBoilerEntity> supp) {
+	public SteamBoiler(Settings settings, FabricBlockEntityTypeBuilder.Factory<? extends AbstractSteamBoilerEntity> supp) {
 		super(settings);
 		this.beSupplier = supp;
 		setDefaultState(getDefaultState().with(LIT, false));
@@ -84,7 +79,7 @@ public class SteamBoiler extends Block implements BlockEntityProvider, Attribute
 
 	@Override
 	public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-
+		//noop
 	}
 
 	@Override
@@ -108,8 +103,8 @@ public class SteamBoiler extends Block implements BlockEntityProvider, Attribute
 	}
 
 	@Override
-	public BlockEntity createBlockEntity(BlockView view) {
-		return beSupplier.get();
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return beSupplier.create(pos, state);
 	}
 
 	@Override

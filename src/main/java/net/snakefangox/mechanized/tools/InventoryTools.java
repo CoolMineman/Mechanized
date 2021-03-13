@@ -77,7 +77,7 @@ public class InventoryTools {
 			ItemStack itemStack = (ItemStack) stacks.get(i);
 			CompoundTag compoundTag = new CompoundTag();
 			compoundTag.putByte("Slot", (byte) i);
-			itemStack.toTag(compoundTag);
+			itemStack.writeNbt(compoundTag);
 			listTag.add(compoundTag);
 		}
 

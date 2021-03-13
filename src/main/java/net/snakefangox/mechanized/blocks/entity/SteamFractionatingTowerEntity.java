@@ -9,6 +9,7 @@ import net.snakefangox.mechanized.steam.Steam;
 import net.snakefangox.mechanized.steam.SteamUtil;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
@@ -34,8 +35,8 @@ public class SteamFractionatingTowerEntity extends AbstractSteamEntity {
 	private int level = -1;
 	private int stoneLevel = 0;
 
-	public SteamFractionatingTowerEntity() {
-		super(MRegister.STEAM_FRACTIONATING_TOWER_ENTITY);
+	public SteamFractionatingTowerEntity(BlockPos pos, BlockState state) {
+		super(MRegister.STEAM_FRACTIONATING_TOWER_ENTITY, pos, state);
 	}
 
 	@Override
@@ -73,10 +74,10 @@ public class SteamFractionatingTowerEntity extends AbstractSteamEntity {
 		if (!world.isAir(minePos)
 				&& (blockState.getMaterial() == Material.STONE || blockState.getMaterial() == Material.AGGREGATE)
 				&& hardness < 100 && hardness >= 0) {
-			BlockEntity blockEntity = blockState.getBlock().hasBlockEntity() ? world.getBlockEntity(minePos) : null;
+			BlockEntity blockEntity = blockState.getBlock() instanceof BlockEntityProvider ? world.getBlockEntity(minePos) : null;
 			Block.dropStacks(blockState, world, minePos, blockEntity, null, ItemStack.EMPTY);
 			world.breakBlock(minePos, false);
-			List<ItemEntity> items = world.getEntities(ItemEntity.class, new Box(minePos), null);
+			List<ItemEntity> items = world.getEntitiesByClass(ItemEntity.class, new Box(minePos), null);
 			items.forEach(ie -> {
 				double x = (ie.getX() - pos.getX()) / 2 + pos.getX();
 				double z = (ie.getZ() - pos.getZ()) / 2 + pos.getZ();
@@ -129,15 +130,15 @@ public class SteamFractionatingTowerEntity extends AbstractSteamEntity {
 	}
 
 	@Override
-	public void fromTag(BlockState state, CompoundTag tag) {
-		super.fromTag(state, tag);
+	public void readNbt(CompoundTag tag) {
+		super.readNbt(tag);
 		level = tag.getInt("level");
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public CompoundTag writeNbt(CompoundTag tag) {
 		tag.putInt("level", level);
-		return super.toTag(tag);
+		return super.writeNbt(tag);
 	}
 
 }

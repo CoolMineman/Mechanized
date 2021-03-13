@@ -3,10 +3,12 @@ package net.snakefangox.mechanized.blocks.entity;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.server.PlayerStream;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.snakefangox.mechanized.MRegister;
@@ -23,8 +25,8 @@ public class FanEntity extends AbstractSteamEntity {
 	private static final double VEL_MODIFIER = 0.1;
 	private static final int STEAM_CAPACITY = Steam.UNIT;
 
-	public FanEntity() {
-		super(MRegister.FAN_ENTITY);
+	public FanEntity(BlockPos pos, BlockState state) {
+		super(MRegister.FAN_ENTITY, pos, state);
 	}
 
 	@Override
@@ -45,7 +47,7 @@ public class FanEntity extends AbstractSteamEntity {
 		Direction facing = getCachedState().get(Properties.FACING);
 		if (getSteamAmount(null) > 0 && world.getReceivedRedstonePower(pos) == 0) {
 			int pushDistance = (int) ((int) Math.max(1, getPressurePSB(null) * 0.3) * 0.5);
-			List<Entity> entities = world.getEntities(null, new Box(pos.offset(facing, pushDistance).add(1, 1, 1),
+			List<Entity> entities = world.getOtherEntities(null, new Box(pos.offset(facing, pushDistance).add(1, 1, 1),
 					pos.offset(facing.getOpposite(), pushDistance)));
 			entities.forEach(ent -> {
 				double velX = facing.getOffsetX() * VEL_MODIFIER * getPressure(null);

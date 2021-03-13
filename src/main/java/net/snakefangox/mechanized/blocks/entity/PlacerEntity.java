@@ -34,8 +34,8 @@ public class PlacerEntity extends AbstractSteamEntity implements StandardInvento
 	boolean extended = false;
 	DefaultedList<ItemStack> block = DefaultedList.ofSize(1, ItemStack.EMPTY);
 
-	public PlacerEntity() {
-		super(MRegister.PLACER_ENTITY);
+	public PlacerEntity(BlockPos pos, BlockState state) {
+		super(MRegister.PLACER_ENTITY, pos, state);
 	}
 
 	@Override
@@ -75,17 +75,17 @@ public class PlacerEntity extends AbstractSteamEntity implements StandardInvento
 	}
 
 	@Override
-	public void fromTag(BlockState state, CompoundTag tag) {
-		super.fromTag(state, tag);
-		Inventories.toTag(tag, getItems());
+	public void readNbt(CompoundTag tag) {
+		super.readNbt(tag);
+		Inventories.readNbt(tag, getItems());
 		extended = tag.getBoolean("extended");
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
-		Inventories.fromTag(tag, getItems());
+	public CompoundTag writeNbt(CompoundTag tag) {
+		Inventories.writeNbt(tag, getItems());
 		tag.putBoolean("extended", extended);
-		return super.toTag(tag);
+		return super.writeNbt(tag);
 	}
 
 	@Override

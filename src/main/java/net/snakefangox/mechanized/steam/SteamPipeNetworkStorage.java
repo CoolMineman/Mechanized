@@ -19,10 +19,6 @@ public class SteamPipeNetworkStorage extends PersistentState {
 	List<PipeNetwork> pipe_networks = new ArrayList<PipeNetwork>();
 	int nextID = 0;
 
-	public SteamPipeNetworkStorage() {
-		super(KEY);
-	}
-
 	public void createNewPipeNetwork(BlockPos pos, World world) {
 		PipeNetwork pn = new PipeNetwork();
 		pn.addPipe(pos, this);
@@ -131,26 +127,27 @@ public class SteamPipeNetworkStorage extends PersistentState {
 	}
 
 	public static SteamPipeNetworkStorage getInstance(ServerWorld world) {
-		return world.getPersistentStateManager().getOrCreate(() -> new SteamPipeNetworkStorage(), KEY);
+		return world.getPersistentStateManager().getOrCreate(SteamPipeNetworkStorage::fromNbt, SteamPipeNetworkStorage::new, KEY);
 	}
 
-	@Override
-	public void fromTag(CompoundTag tag) {
-		nextID = tag.getInt("nextID");
-		for (int i = 0; i < nextID; i++) {
+	public static SteamPipeNetworkStorage fromNbt(CompoundTag tag) {
+		SteamPipeNetworkStorage result = new SteamPipeNetworkStorage();
+		result.nextID = tag.getInt("nextID");
+		for (int i = 0; i < result.nextID; i++) {
 			String s = String.valueOf(i);
 			if (tag.contains(s)) {
 				PipeNetwork network = new PipeNetwork();
 				network.fromTag(tag.getCompound(s));
-				pipe_networks.add(i, network);
+				result.pipe_networks.add(i, network);
 			} else {
-				pipe_networks.add(i, null);
+				result.pipe_networks.add(i, null);
 			}
 		}
+		return result;
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public CompoundTag writeNbt(CompoundTag tag) {
 		for (int i = 0; i < pipe_networks.size(); i++) {
 			PipeNetwork pn = pipe_networks.get(i);
 			if (pn != null)

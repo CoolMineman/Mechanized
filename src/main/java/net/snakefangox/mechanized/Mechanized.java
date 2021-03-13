@@ -34,11 +34,11 @@ public class Mechanized implements ModInitializer {
 
 		ToServerHandlers.initPacketHandlers();
 		
-		if (!FabricLoader.getInstance().isModLoaded(COTTON_R_MODID)) {
-			Registry.BIOME.forEach(MGeneration::addOreToBiome);
-			RegistryEntryAddedCallback.event(Registry.BIOME)
-					.register((i, identifier, biome) -> MGeneration.addOreToBiome(biome));
-		}
+		// if (!FabricLoader.getInstance().isModLoaded(COTTON_R_MODID)) {
+		// 	Registry.BIOME.forEach(MGeneration::addOreToBiome);
+		// 	RegistryEntryAddedCallback.event(Registry.BIOME)
+		// 			.register((i, identifier, biome) -> MGeneration.addOreToBiome(biome));
+		// }
 
 		if (FabricLoader.getInstance().isDevelopmentEnvironment())
 			AutoGenJson.autoGenerateJson(MODID, "D:\\Code\\Fabric_mods\\Mechanized");

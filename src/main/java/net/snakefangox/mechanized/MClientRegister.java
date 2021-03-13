@@ -33,7 +33,7 @@ public class MClientRegister implements ClientModInitializer {
 		ScreenRegistry.register(MRegister.UPGRADE_TABLE_CONTAINER, UpgradeTableScreen::new);
 		ScreenRegistry.register(MRegister.PLACER_CONTAINER, PlacerScreen::new);
 		
-		EntityRendererRegistry.INSTANCE.register(MRegister.FLYING_BLOCK, (entityRenderDispatcher, context) -> new FallingBlockEntityRenderer(entityRenderDispatcher));
+		EntityRendererRegistry.INSTANCE.register(MRegister.FLYING_BLOCK, FallingBlockEntityRenderer::new);
 	}
 
 	@Override

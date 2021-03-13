@@ -5,35 +5,26 @@ import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.InventoryProvider;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.PropertyDelegate;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.snakefangox.mechanized.MRegister;
 import net.snakefangox.mechanized.blocks.AlloyFurnace;
 import net.snakefangox.mechanized.blocks.SteamBoiler;
-import net.snakefangox.mechanized.gui.AlloyFurnaceContainer;
 import net.snakefangox.mechanized.parts.StandardInventory;
 import net.snakefangox.mechanized.recipes.AlloyRecipe;
 import net.snakefangox.mechanized.tools.InventoryTools;
 
 import java.util.Optional;
 
-public class AlloyFurnaceEntity extends BlockEntity
-		implements StandardInventory, SidedInventory, InventoryProvider, PropertyDelegateHolder, Tickable {
+public class AlloyFurnaceEntity extends BlockEntity implements StandardInventory, SidedInventory, InventoryProvider, PropertyDelegateHolder {
 
 	DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
 	static final int[] INPUT_SLOTS = new int[] { 0, 1 };
@@ -47,11 +38,14 @@ public class AlloyFurnaceEntity extends BlockEntity
 	int fuel = 0;
 	int maxFuel = 0;
 
-	public AlloyFurnaceEntity() {
-		super(MRegister.ALLOY_FURNACE_ENTITY);
+	public AlloyFurnaceEntity(BlockPos pos, BlockState state) {
+		super(MRegister.ALLOY_FURNACE_ENTITY, pos, state);
 	}
 
-	@Override
+	public static void tick(World world, BlockPos pos, BlockState state, AlloyFurnaceEntity blockEntity) {
+		blockEntity.tick();
+	}
+
 	public void tick() {
 		if (world.isClient)
 			return;
@@ -103,18 +97,18 @@ public class AlloyFurnaceEntity extends BlockEntity
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
-		Inventories.toTag(tag, inventory);
+	public CompoundTag writeNbt(CompoundTag tag) {
+		Inventories.writeNbt(tag, inventory);
 		tag.putInt("fuel", fuel);
 		tag.putInt("maxFuel", maxFuel);
 		tag.putInt("progress", progress);
-		return super.toTag(tag);
+		return super.writeNbt(tag);
 	}
 
 	@Override
-	public void fromTag(BlockState state, CompoundTag tag) {
-		super.fromTag(state, tag);
-		Inventories.fromTag(tag, inventory);
+	public void readNbt(CompoundTag tag) {
+		super.readNbt(tag);
+		Inventories.readNbt(tag, inventory);
 		fuel = tag.getInt("fuel");
 		maxFuel = tag.getInt("maxFuel");
 		progress = tag.getInt("progress");
@@ -162,6 +156,7 @@ public class AlloyFurnaceEntity extends BlockEntity
 		return slot == OUTPUT_SLOT[0];
 	}
 
+	@SuppressWarnings("all")
 	PropertyDelegate propdel = new PropertyDelegate() {
 
 		@Override

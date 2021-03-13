@@ -2,9 +2,13 @@ package net.snakefangox.mechanized.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.Properties;
@@ -13,9 +17,10 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 import net.snakefangox.mechanized.MRegister;
 
-public class Fan extends Block implements BlockEntityProvider {
+public class Fan extends BlockWithEntity implements BlockEntityProvider {
 
 	private VoxelShape BOX_N = VoxelShapes.cuboid(0, 0, 0.5, 1, 1, 0.999);
 	private VoxelShape BOX_E;
@@ -32,6 +37,16 @@ public class Fan extends Block implements BlockEntityProvider {
 		BOX_W = VoxelShapes.cuboid(box.minZ, box.minY, box.minX, box.maxZ, box.maxY, box.maxX);
 		BOX_U = VoxelShapes.cuboid(box.minX, 1F - box.minZ, box.minY, box.maxX, 1F - box.maxZ, box.maxY);
 		BOX_D = VoxelShapes.cuboid(box.minX, box.minZ, box.minY, box.maxX, box.maxZ, box.maxY);
+	}
+
+	@Override
+	public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.MODEL;
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state,BlockEntityType<T> type) {
+		return world.isClient ? null : checkType(type, MRegister.FAN_ENTITY, (w, p, s, be) -> be.tick());
 	}
 
 	@Override
@@ -72,7 +87,7 @@ public class Fan extends Block implements BlockEntityProvider {
 	}
 
 	@Override
-	public BlockEntity createBlockEntity(BlockView view) {
-		return MRegister.FAN_ENTITY.instantiate();
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return MRegister.FAN_ENTITY.instantiate(pos, state);
 	}
 }

@@ -12,6 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.snakefangox.mechanized.MRegister;
@@ -27,8 +28,8 @@ public class SteamCondenserEntity extends AbstractSteamEntity {
 	private static final FluidAmount TANK_CAPACITY = FluidAmount.ofWhole(1);
 	public final SimpleFixedFluidInv tank;
 
-	public SteamCondenserEntity() {
-		super(MRegister.STEAM_CONDENSER_ENTITY);
+	public SteamCondenserEntity(BlockPos pos, BlockState state) {
+		super(MRegister.STEAM_CONDENSER_ENTITY, pos, state);
 		tank = new SimpleFixedFluidInv(1, TANK_CAPACITY);
 	}
 
@@ -48,7 +49,7 @@ public class SteamCondenserEntity extends AbstractSteamEntity {
 					((FurnaceInterface)be).addFuelTimeMech(amountCondensed);
 				}else {
 					if (world.getBlockState(pos.offset(Direction.UP)).isAir()) {
-						List<Entity> entities = world.getEntities(null, new Box(pos.up()));
+						List<Entity> entities = world.getOtherEntities(null, new Box(pos.up()));
 						entities.forEach(e -> {
 							if (e instanceof LivingEntity) {
 								((LivingEntity)e).damage(DamageSource.IN_FIRE, 1);
@@ -62,15 +63,15 @@ public class SteamCondenserEntity extends AbstractSteamEntity {
 	}
 
 	@Override
-	public void fromTag(BlockState state, CompoundTag tag) {
-		super.fromTag(state, tag);
+	public void readNbt(CompoundTag tag) {
+		super.readNbt(tag);
 		tank.fromTag(tag.getCompound("tank"));
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public CompoundTag writeNbt(CompoundTag tag) {
 		tag.put("tank", tank.toTag());
-		return super.toTag(tag);
+		return super.writeNbt(tag);
 	}
 
 }

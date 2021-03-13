@@ -79,6 +79,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.entity.FabricEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 
@@ -309,11 +310,10 @@ public class MRegister {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T extends BlockEntity> BlockEntityType<T> registerBlock(Block block, Identifier id,
-																			Supplier<BlockEntity> be) {
+	private static <T extends BlockEntity> BlockEntityType<T> registerBlock(Block block, Identifier id, FabricBlockEntityTypeBuilder.Factory<BlockEntity> be) {
 		registerBlock(block, id);
 		return (BlockEntityType<T>) Registry.register(Registry.BLOCK_ENTITY_TYPE, id,
-				BlockEntityType.Builder.create(be, block).build(null));
+				FabricBlockEntityTypeBuilder.create(be, block).build(null));
 	}
 
 	private static ToIntFunction<BlockState> createLightLevelFromBlockState(int litLevel) {

@@ -26,7 +26,7 @@ public class FlyingBlockEntity extends FallingBlockEntity {
 			timeFalling = 10;
 		if (world instanceof ServerWorld) {
 			if (isSpawnChunk((ServerWorld) world, getBlockPos(), getServer()))
-				remove();
+				remove(RemovalReason.DISCARDED);
 		}
 	}
 

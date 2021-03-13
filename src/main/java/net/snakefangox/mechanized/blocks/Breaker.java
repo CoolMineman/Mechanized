@@ -2,20 +2,17 @@ package net.snakefangox.mechanized.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.EnchantingTableBlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Nameable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.shape.VoxelShape;
@@ -23,9 +20,8 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.snakefangox.mechanized.MRegister;
-import net.snakefangox.mechanized.gui.AlloyFurnaceContainer;
 
-public class Breaker extends Block implements BlockEntityProvider {
+public class Breaker extends BlockWithEntity {
 
 	public static final BooleanProperty EXTENDED = BooleanProperty.of("extended");
 
@@ -45,6 +41,16 @@ public class Breaker extends Block implements BlockEntityProvider {
 		BOX_W = VoxelShapes.cuboid(box.minZ, box.minY, box.minX, box.maxZ, box.maxY, box.maxX);
 		BOX_U = VoxelShapes.cuboid(box.minX, 1F - box.minZ, box.minY, box.maxX, 1F - box.maxZ, box.maxY);
 		BOX_D = VoxelShapes.cuboid(box.minX, box.minZ, box.minY, box.maxX, box.maxZ, box.maxY);
+	}
+
+	@Override
+	public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.MODEL;
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+		return world.isClient ? null : checkType(type, MRegister.BREAKER_ENTITY, (w, p, s, be) -> be.tick());
 	}
 
 	@Override
@@ -85,8 +91,8 @@ public class Breaker extends Block implements BlockEntityProvider {
 	}
 
 	@Override
-	public BlockEntity createBlockEntity(BlockView view) {
-		return MRegister.BREAKER_ENTITY.instantiate();
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return MRegister.BREAKER_ENTITY.instantiate(pos, state);
 	}
 
 }

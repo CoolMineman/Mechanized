@@ -14,7 +14,7 @@ import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.Tickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.snakefangox.mechanized.MRegister;
 import net.snakefangox.mechanized.blocks.PressureValve;
@@ -24,7 +24,7 @@ import net.snakefangox.mechanized.steam.SteamUtil;
 
 import java.util.stream.Stream;
 
-public class PressureValveEntity extends BlockEntity implements Steam, Tickable, PropertyDelegateHolder {
+public class PressureValveEntity extends BlockEntity implements Steam, PropertyDelegateHolder {
 
 	private static final int STEAM_TANK_CAPACITY = (int) (Steam.UNIT * 0.1);
 	private static final int VENT_PER_QUARTER_SEC = 16;
@@ -33,15 +33,14 @@ public class PressureValveEntity extends BlockEntity implements Steam, Tickable,
 	int ventSoundTime = 0;
 	boolean isOpen = false;
 
-	public PressureValveEntity() {
-		super(MRegister.PRESSURE_VALVE_ENTITY);
+	public PressureValveEntity(BlockPos pos, BlockState state) {
+		super(MRegister.PRESSURE_VALVE_ENTITY, pos, state);
 	}
 
 	public void setPressure(int press) {
 		ventPressure = press;
 	}
 
-	@Override
 	public void tick() {
 		if (world.isClient)
 			return;
@@ -111,21 +110,22 @@ public class PressureValveEntity extends BlockEntity implements Steam, Tickable,
 	}
 
 	@Override
-	public void fromTag(BlockState state, CompoundTag tag) {
-		super.fromTag(state, tag);
+	public void readNbt(CompoundTag tag) {
+		super.readNbt(tag);
 		ventPressure = tag.getInt("ventPressure");
 		steamAmount = tag.getInt("steamAmount");
 		isOpen = tag.getBoolean("isOpen");
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public CompoundTag writeNbt(CompoundTag tag) {
 		tag.putInt("ventPressure", ventPressure);
 		tag.putInt("steamAmount", steamAmount);
 		tag.putBoolean("isOpen", isOpen);
-		return super.toTag(tag);
+		return super.writeNbt(tag);
 	}
 
+	@SuppressWarnings("all")
 	PropertyDelegate propdel = new PropertyDelegate() {
 
 		@Override

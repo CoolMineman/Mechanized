@@ -14,13 +14,13 @@ import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.PropertyDelegate;
-import net.minecraft.util.Tickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.snakefangox.mechanized.MRegister;
 import net.snakefangox.mechanized.steam.Steam;
 import net.snakefangox.mechanized.steam.SteamUtil;
 
-public class PumpEntity extends BlockEntity implements Steam, Tickable, PropertyDelegateHolder {
+public class PumpEntity extends BlockEntity implements Steam, PropertyDelegateHolder {
 
 	private static final int STEAM_CAPACITY = Steam.UNIT;
 	private static final int PUMP_COST = (int) (Steam.UNIT * 0.02);
@@ -29,12 +29,11 @@ public class PumpEntity extends BlockEntity implements Steam, Tickable, Property
 	private static final FluidAmount TANK_CAPACITY = FluidAmount.ofWhole(1);
 	public final SimpleFixedFluidInv tank;
 
-	public PumpEntity() {
-		super(MRegister.PUMP_ENTITY);
+	public PumpEntity(BlockPos pos, BlockState state) {
+		super(MRegister.PUMP_ENTITY, pos, state);
 		tank = new SimpleFixedFluidInv(1, TANK_CAPACITY);
 	}
 
-	@Override
 	public void tick() {
 		if (world.isClient)
 			return;
@@ -99,19 +98,20 @@ public class PumpEntity extends BlockEntity implements Steam, Tickable, Property
 	}
 
 	@Override
-	public void fromTag(BlockState state, CompoundTag tag) {
-		super.fromTag(state, tag);
+	public void readNbt(CompoundTag tag) {
+		super.readNbt(tag);
 		steamAmount = tag.getInt("steamAmount");
 		tank.fromTag(tag.getCompound("tank"));
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public CompoundTag writeNbt(CompoundTag tag) {
 		tag.putInt("steamAmount", steamAmount);
 		tag.put("tank", tank.toTag());
-		return super.toTag(tag);
+		return super.writeNbt(tag);
 	}
 
+	@SuppressWarnings("all")
 	PropertyDelegate propdel = new PropertyDelegate() {
 
 		@Override

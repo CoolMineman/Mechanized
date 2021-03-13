@@ -1,26 +1,38 @@
 package net.snakefangox.mechanized.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.snakefangox.mechanized.MRegister;
 import net.snakefangox.mechanized.blocks.entity.SteamPistonEntity;
 
-public class SteamPiston extends Block implements BlockEntityProvider {
+public class SteamPiston extends BlockWithEntity {
 
 	public static final BooleanProperty EXTENDED = BooleanProperty.of("extended");
 
 	public SteamPiston(Settings settings) {
 		super(settings);
 		setDefaultState(getDefaultState().with(EXTENDED, false));
+	}
+
+	@Override
+	public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.MODEL;
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+		return world.isClient ? null : checkType(type, MRegister.STEAM_PISTON_ENTITY, (w, p, s, be) -> be.tick());
 	}
 
 	@Override
@@ -44,7 +56,7 @@ public class SteamPiston extends Block implements BlockEntityProvider {
 	}
 
 	@Override
-	public BlockEntity createBlockEntity(BlockView view) {
-		return MRegister.STEAM_PISTON_ENTITY.instantiate();
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return MRegister.STEAM_PISTON_ENTITY.instantiate(pos, state);
 	}
 }

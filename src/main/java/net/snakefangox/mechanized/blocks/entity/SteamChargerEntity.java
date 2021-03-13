@@ -8,8 +8,8 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.snakefangox.mechanized.MRegister;
 import net.snakefangox.mechanized.parts.StandardInventory;
@@ -18,15 +18,14 @@ import net.snakefangox.mechanized.steam.SteamItem;
 import net.snakefangox.mechanized.steam.SteamUtil;
 import net.snakefangox.mechanized.tools.InventoryTools;
 
-public class SteamChargerEntity extends BlockEntity implements Steam, Tickable, StandardInventory, BlockEntityClientSerializable {
+public class SteamChargerEntity extends BlockEntity implements Steam, StandardInventory, BlockEntityClientSerializable {
 
 	DefaultedList<ItemStack> inv = DefaultedList.ofSize(1, ItemStack.EMPTY);
 	
-	public SteamChargerEntity() {
-		super(MRegister.STEAM_CHARGER_ENTITY);
+	public SteamChargerEntity(BlockPos pos, BlockState state) {
+		super(MRegister.STEAM_CHARGER_ENTITY, pos, state);
 	}
 
-	@Override
 	public void tick() {
 		if (world.isClient)
 			return;
@@ -73,20 +72,15 @@ public class SteamChargerEntity extends BlockEntity implements Steam, Tickable, 
 	}
 	
 	@Override
-	public void fromTag(BlockState state, CompoundTag tag) {
-		super.fromTag(state, tag);
-		Inventories.fromTag(tag, inv);
+	public void readNbt(CompoundTag tag) {
+		super.readNbt(tag);
+		Inventories.readNbt(tag, inv);
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
-		Inventories.toTag(tag, inv);
-		return super.toTag(tag);
-	}
-	
-	@Override
-	public BlockEntityUpdateS2CPacket toUpdatePacket() {
-		return super.toUpdatePacket();
+	public CompoundTag writeNbt(CompoundTag tag) {
+		Inventories.writeNbt(tag, inv);
+		return super.writeNbt(tag);
 	}
 
 	@Override
@@ -96,7 +90,7 @@ public class SteamChargerEntity extends BlockEntity implements Steam, Tickable, 
 	
 	@Override
 	public void fromClientTag(CompoundTag tag) {
-		Inventories.fromTag(tag, inv);
+		Inventories.readNbt(tag, inv);
 	}
 
 	@Override

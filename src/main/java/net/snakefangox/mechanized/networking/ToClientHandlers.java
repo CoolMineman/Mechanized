@@ -51,7 +51,7 @@ public class ToClientHandlers {
 		ClientSidePacketRegistry.INSTANCE.register(PacketIdentifiers.SYNC_CURSER_STACK, (packetContext, attachedData) -> {
 			ItemStack item = attachedData.readItemStack();
 			packetContext.getTaskQueue().execute(() -> {
-				client.player.inventory.setCursorStack(item);
+				client.player.currentScreenHandler.method_34254(item);
 			});
 		});
 

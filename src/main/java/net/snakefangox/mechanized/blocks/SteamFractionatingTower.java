@@ -2,28 +2,41 @@ package net.snakefangox.mechanized.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import net.snakefangox.mechanized.MRegister;
 
-public class SteamFractionatingTower extends Block implements BlockEntityProvider {
+public class SteamFractionatingTower extends BlockWithEntity {
 
 	public static final IntProperty LEVEL = IntProperty.of("level", 0, 2);
 
 	public SteamFractionatingTower(Settings settings) {
 		super(settings);
 		setDefaultState(getDefaultState().with(LEVEL, 0));
+	}
+
+	@Override
+	public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.MODEL;
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+		return world.isClient ? null : checkType(type, MRegister.STEAM_FRACTIONATING_TOWER_ENTITY, (w, p, s, be) -> be.tick());
 	}
 
 	@Override
@@ -62,7 +75,7 @@ public class SteamFractionatingTower extends Block implements BlockEntityProvide
 	}
 
 	@Override
-	public BlockEntity createBlockEntity(BlockView view) {
-		return MRegister.STEAM_FRACTIONATING_TOWER_ENTITY.instantiate();
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return MRegister.STEAM_FRACTIONATING_TOWER_ENTITY.instantiate(pos, state);
 	}
 }

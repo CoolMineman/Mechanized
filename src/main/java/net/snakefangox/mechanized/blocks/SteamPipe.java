@@ -25,7 +25,7 @@ import net.snakefangox.mechanized.blocks.entity.SteamPipeEntity;
 import net.snakefangox.mechanized.steam.Steam;
 import net.snakefangox.mechanized.steam.SteamPipeNetworkStorage;
 
-public class SteamPipe extends Block implements BlockEntityProvider, Waterloggable {
+public class SteamPipe extends BlockWithEntity implements Waterloggable {
 
 	protected static final BooleanProperty CONNECTED_NORTH = BooleanProperty.of("north");
 	protected static final BooleanProperty CONNECTED_SOUTH = BooleanProperty.of("south");
@@ -53,6 +53,11 @@ public class SteamPipe extends Block implements BlockEntityProvider, Waterloggab
 		BOX_W = VoxelShapes.cuboid(box.minZ, box.minY, box.minX, box.maxZ, box.maxY, box.maxX);
 		BOX_U = VoxelShapes.cuboid(box.minX, 1F - box.minZ, box.minY, box.maxX, 1F - box.maxZ, box.maxY);
 		BOX_D = VoxelShapes.cuboid(box.minX, box.minZ, box.minY, box.maxX, box.maxZ, box.maxY);
+	}
+
+	@Override
+	public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.MODEL;
 	}
 
 	@Override
@@ -156,8 +161,8 @@ public class SteamPipe extends Block implements BlockEntityProvider, Waterloggab
 	}
 
 	@Override
-	public BlockEntity createBlockEntity(BlockView view) {
-		return MRegister.STEAM_PIPE_ENTITY.instantiate();
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return MRegister.STEAM_PIPE_ENTITY.instantiate(pos, state);
 	}
 
 }

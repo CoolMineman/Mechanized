@@ -49,7 +49,7 @@ public class SteamExoSuit extends ArmorItem implements SteamItem, Upgradable {
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
 		if (entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
-			if (slot < 4 && player.inventory.armor.get(slot) == stack) {
+			if (slot < 4 && player.getInventory().armor.get(slot) == stack) {
 				switch (slot) {
 				case 0:
 					break;
@@ -76,7 +76,7 @@ public class SteamExoSuit extends ArmorItem implements SteamItem, Upgradable {
 											new StatusEffectInstance(StatusEffects.NIGHT_VISION, 3, 1, false, false));
 						}
 						if ((Integer) getUpgradeFromStack(stack)[4] > 0 && world.getTime() % 20 == 0) {
-							List<Entity> entities = world.getEntities(player,
+							List<Entity> entities = world.getOtherEntities(player,
 											new Box(player.getX() + AREA_SIGHT_RANGE, player.getY() + AREA_SIGHT_RANGE,
 															player.getZ() + AREA_SIGHT_RANGE, player.getX() - AREA_SIGHT_RANGE,
 															player.getY() - AREA_SIGHT_RANGE, player.getZ() - AREA_SIGHT_RANGE));
@@ -97,10 +97,10 @@ public class SteamExoSuit extends ArmorItem implements SteamItem, Upgradable {
 					removeSteam(stack, STEAM_USE_PER_SEC);
 				}
 				int armorAmp = 0;
-				for (int i = 0; i < player.inventory.armor.size(); i++) {
-					if (player.inventory.armor.get(slot).getItem() instanceof SteamExoSuit) {
+				for (int i = 0; i < player.getInventory().armor.size(); i++) {
+					if (player.getInventory().armor.get(slot).getItem() instanceof SteamExoSuit) {
 						armorAmp += (Integer) ((Upgradable) MRegister.STEAM_EXOSUIT_CHEST)
-										.getUpgradeFromStack(player.inventory.armor.get(i))[0];
+										.getUpgradeFromStack(player.getInventory().armor.get(i))[0];
 					}
 				}
 				player.addStatusEffect(new StatusEffectInstance(MRegister.EXOSUIT_PROTECC, 3, armorAmp, false, false));

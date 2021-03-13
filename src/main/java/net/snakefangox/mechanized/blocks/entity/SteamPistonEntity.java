@@ -32,8 +32,8 @@ public class SteamPistonEntity extends AbstractSteamEntity {
 	boolean extended = false;
 	boolean powered = false;
 
-	public SteamPistonEntity() {
-		super(MRegister.STEAM_PISTON_ENTITY);
+	public SteamPistonEntity(BlockPos pos, BlockState state) {
+		super(MRegister.STEAM_PISTON_ENTITY, pos, state);
 	}
 
 	@Override
@@ -55,6 +55,7 @@ public class SteamPistonEntity extends AbstractSteamEntity {
 		}
 	}
 
+	@SuppressWarnings("all")
 	public void onSignal() {
 		if (retractTimer > 0)
 			return;
@@ -69,18 +70,18 @@ public class SteamPistonEntity extends AbstractSteamEntity {
 
 			if (be != null) {
 				CompoundTag tag = new CompoundTag();
-				be.toTag(tag);
+				be.readNbt(tag);
 				fallingBlock.blockEntityData = tag.copy();
 				if (tag.contains("Items") && tag.get("Items") instanceof ListTag)
 					InventoryTools.toTagIncEmpty(tag,
 							DefaultedList.ofSize(tag.getList("Items", 10).size(), ItemStack.EMPTY), true);
-				be.fromTag(state, tag);
+				be.readNbt(tag);
 			}
 			if (isAnvil)
-				fallingBlock.setHurtEntities(true);
+				fallingBlock.setHurtEntities(2.0F, 40);
 			((ServerWorld) world).spawnEntity(fallingBlock);
 		}
-		List<Entity> entities = world.getEntities(null, new Box(off));
+		List<Entity> entities = world.getOtherEntities(null, new Box(off));
 		entities.forEach(ent -> {
 			ent.addVelocity(dir.getOffsetX() * (getPressurePSB(null) * VELOCITY_PER_PSB),
 					dir.getOffsetY() * (getPressurePSB(null) * VELOCITY_PER_PSB),
@@ -106,18 +107,18 @@ public class SteamPistonEntity extends AbstractSteamEntity {
 	}
 
 	@Override
-	public void fromTag(BlockState state, CompoundTag tag) {
-		super.fromTag(state, tag);
+	public void readNbt(CompoundTag tag) {
+		super.readNbt(tag);
 		retractTimer = tag.getInt("retractTimer");
 		extended = tag.getBoolean("extended");
 		powered = tag.getBoolean("powered");
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public CompoundTag writeNbt(CompoundTag tag) {
 		tag.putInt("retractTimer", retractTimer);
 		tag.putBoolean("extended", extended);
 		tag.putBoolean("powered", powered);
-		return super.toTag(tag);
+		return super.writeNbt(tag);
 	}
 }

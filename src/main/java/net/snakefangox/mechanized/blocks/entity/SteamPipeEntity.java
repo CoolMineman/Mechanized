@@ -4,6 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.snakefangox.mechanized.MRegister;
 import net.snakefangox.mechanized.steam.Steam;
@@ -15,8 +16,8 @@ public class SteamPipeEntity extends BlockEntity implements Steam, NetworkMember
 	
 	int pipeNetworkID = 0;
 
-	public SteamPipeEntity() {
-		super(MRegister.STEAM_PIPE_ENTITY);
+	public SteamPipeEntity(BlockPos pos, BlockState state) {
+		super(MRegister.STEAM_PIPE_ENTITY, pos, state);
 	}
 	
 	@Override
@@ -54,14 +55,14 @@ public class SteamPipeEntity extends BlockEntity implements Steam, NetworkMember
 	}
 
 	@Override
-	public void fromTag(BlockState state, CompoundTag tag) {
-		super.fromTag(state, tag);
+	public void readNbt(CompoundTag tag) {
+		super.readNbt(tag);
 		pipeNetworkID = tag.getInt("pipeNetworkID");
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public CompoundTag writeNbt(CompoundTag tag) {
 		tag.putInt("pipeNetworkID", pipeNetworkID);
-		return super.toTag(tag);
+		return super.writeNbt(tag);
 	}
 }

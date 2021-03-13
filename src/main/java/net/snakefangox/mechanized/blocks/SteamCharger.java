@@ -2,6 +2,8 @@ package net.snakefangox.mechanized.blocks;
 
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -20,12 +22,22 @@ import net.snakefangox.mechanized.blocks.entity.SteamChargerEntity;
 import net.snakefangox.mechanized.parts.StandardInventory;
 import net.snakefangox.mechanized.steam.SteamItem;
 
-public class SteamCharger extends Block implements BlockEntityProvider {
+public class SteamCharger extends BlockWithEntity {
 
 	private VoxelShape BOX = VoxelShapes.cuboid(0, 0, 0, 1, 0.75, 1);
 
 	public SteamCharger(Settings settings) {
 		super(settings);
+	}
+
+	@Override
+	public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.MODEL;
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+		return world.isClient ? null : checkType(type, MRegister.STEAM_CHARGER_ENTITY, (w, p, s, be) -> be.tick());
 	}
 
 	@Override
@@ -68,8 +80,8 @@ public class SteamCharger extends Block implements BlockEntityProvider {
 	}
 
 	@Override
-	public BlockEntity createBlockEntity(BlockView view) {
-		return MRegister.STEAM_CHARGER_ENTITY.instantiate();
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return MRegister.STEAM_CHARGER_ENTITY.instantiate(pos, state);
 	}
 	
 	@Override

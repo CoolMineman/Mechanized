@@ -8,12 +8,12 @@ import net.snakefangox.mechanized.tools.SteamToolMaterial;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidDrainable;
-import net.minecraft.block.Material;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -27,7 +27,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.RayTraceContext;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.EnvType;
@@ -74,15 +74,15 @@ public class SteamDrill extends PickaxeItem implements SteamItem, Upgradable, Dy
 		if ((Integer) getUpgradeFromStack(stack)[2] == 0 || getPressure(stack) <= 0.01) {
 			return TypedActionResult.pass(user.getStackInHand(hand));
 		}
-		HitResult hit = rayTrace(world, user, RayTraceContext.FluidHandling.SOURCE_ONLY);
+		HitResult hit = Item.raycast(world, user, RaycastContext.FluidHandling.SOURCE_ONLY);
 		if (hit.getType() == HitResult.Type.MISS || hit.getType() != HitResult.Type.BLOCK) {
 			return TypedActionResult.pass(stack);
 		} else {
 			BlockPos pos = new BlockPos(hit.getPos());
 			BlockState state = world.getBlockState(pos);
 			if (state.getBlock() instanceof FluidDrainable) {
-				Fluid fluid = ((FluidDrainable) state.getBlock()).tryDrainFluid(world, pos, state);
-				if (fluid == Fluids.LAVA) {
+				ItemStack fluidStack = ((FluidDrainable) state.getBlock()).tryDrainFluid(world, pos, state);
+				if (fluidStack.isOf(Items.LAVA_BUCKET)) {
 					addSteam(stack, STEAM_PER_BLOCK * 32);
 				} else {
 					removeSteam(stack, STEAM_PER_BLOCK * 16);

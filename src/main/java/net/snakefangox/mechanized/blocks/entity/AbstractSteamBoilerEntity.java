@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.snakefangox.mechanized.blocks.SteamBoiler;
 import net.snakefangox.mechanized.parts.StandardInventory;
@@ -32,8 +33,8 @@ public abstract class AbstractSteamBoilerEntity extends AbstractSteamEntity impl
 	int fuel = 0;
 	int maxFuel = 0;
 
-	public AbstractSteamBoilerEntity(BlockEntityType<?> type) {
-		super(type);
+	public AbstractSteamBoilerEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 		waterTank = new SimpleFixedFluidInv(1, TANK_CAPACITY) {
 			@Override
 			public boolean isFluidValidForTank(int tank, FluidKey fluid) {
@@ -83,18 +84,18 @@ public abstract class AbstractSteamBoilerEntity extends AbstractSteamEntity impl
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
-		Inventories.toTag(tag, inventory);
+	public CompoundTag writeNbt(CompoundTag tag) {
+		Inventories.writeNbt(tag, inventory);
 		tag.putInt("fuel", fuel);
 		tag.putInt("maxFuel", maxFuel);
 		tag.put("tank", waterTank.toTag());
-		return super.toTag(tag);
+		return super.writeNbt(tag);
 	}
 
 	@Override
-	public void fromTag(BlockState state, CompoundTag tag) {
-		super.fromTag(state, tag);
-		Inventories.fromTag(tag, inventory);
+	public void readNbt(CompoundTag tag) {
+		super.readNbt(tag);
+		Inventories.readNbt(tag, inventory);
 		fuel = tag.getInt("fuel");
 		maxFuel = tag.getInt("maxFuel");
 		waterTank.fromTag(tag.getCompound("tank"));
@@ -105,6 +106,7 @@ public abstract class AbstractSteamBoilerEntity extends AbstractSteamEntity impl
 		return inventory;
 	}
 
+	@SuppressWarnings("all")
 	PropertyDelegate propdel = new PropertyDelegate() {
 
 		@Override

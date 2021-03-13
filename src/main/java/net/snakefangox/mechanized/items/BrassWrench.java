@@ -21,12 +21,12 @@ public class BrassWrench extends Item {
 		if(ctx.getWorld().isClient()) return super.useOnBlock(ctx);
 		BlockState state = ctx.getWorld().getBlockState(ctx.getBlockPos());
 		//Get optional
-		Optional<Direction> facing = state.method_28500(Properties.FACING);
+		Optional<Direction> facing = state.getOrEmpty(Properties.FACING);
 		if (facing.isPresent()) {
 			ctx.getWorld().setBlockState(ctx.getBlockPos(), state.cycle(Properties.FACING));
 			return ActionResult.SUCCESS;
 		}
-		Optional<Direction> hfacing = state.method_28500(HorizontalFacingBlock.FACING);
+		Optional<Direction> hfacing = state.getOrEmpty(HorizontalFacingBlock.FACING);
 		if (hfacing.isPresent()) {
 			ctx.getWorld().setBlockState(ctx.getBlockPos(), state.cycle(HorizontalFacingBlock.FACING));
 			return ActionResult.SUCCESS;

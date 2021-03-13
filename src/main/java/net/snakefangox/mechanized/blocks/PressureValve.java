@@ -1,13 +1,15 @@
 package net.snakefangox.mechanized.blocks;
 
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.EnchantingTableBlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemPlacementContext;
@@ -15,7 +17,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.BooleanProperty;
@@ -33,10 +34,9 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.snakefangox.mechanized.MRegister;
 import net.snakefangox.mechanized.blocks.entity.PressureValveEntity;
-import net.snakefangox.mechanized.gui.AlloyFurnaceContainer;
 import net.snakefangox.mechanized.gui.PressureValveContainer;
 
-public class PressureValve extends Block implements BlockEntityProvider {
+public class PressureValve extends BlockWithEntity {
 
 	public static final BooleanProperty OPEN = BooleanProperty.of("open");
 	private VoxelShape BOX_N = VoxelShapes.cuboid(0.25, 0.25, 0, 0.75, 0.75, 0.4);
@@ -69,6 +69,16 @@ public class PressureValve extends Block implements BlockEntityProvider {
 		}
 
 		return ActionResult.SUCCESS;
+	}
+
+	@Override
+	public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.MODEL;
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+		return world.isClient ? null : checkType(type, MRegister.PRESSURE_VALVE_ENTITY, (w, p, s, be) -> be.tick());
 	}
 
 	@Override
@@ -109,8 +119,8 @@ public class PressureValve extends Block implements BlockEntityProvider {
 	}
 
 	@Override
-	public BlockEntity createBlockEntity(BlockView view) {
-		return MRegister.PRESSURE_VALVE_ENTITY.instantiate();
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return MRegister.PRESSURE_VALVE_ENTITY.instantiate(pos, state);
 	}
 
 	@Override

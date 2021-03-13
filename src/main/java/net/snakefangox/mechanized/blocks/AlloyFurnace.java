@@ -3,9 +3,13 @@ package net.snakefangox.mechanized.blocks;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemPlacementContext;
@@ -24,13 +28,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.snakefangox.mechanized.MRegister;
 import net.snakefangox.mechanized.blocks.entity.AlloyFurnaceEntity;
 import net.snakefangox.mechanized.gui.AlloyFurnaceContainer;
 
-public class AlloyFurnace extends Block implements BlockEntityProvider {
+public class AlloyFurnace extends BlockWithEntity {
 
 	public static final BooleanProperty LIT = Properties.LIT;
 
@@ -44,6 +47,11 @@ public class AlloyFurnace extends Block implements BlockEntityProvider {
 							  BlockHitResult hit) {
 		player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
 		return ActionResult.SUCCESS;
+	}
+	
+	@Override
+	public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.MODEL;
 	}
 
 	@Override
@@ -67,8 +75,13 @@ public class AlloyFurnace extends Block implements BlockEntityProvider {
 	}
 
 	@Override
-	public BlockEntity createBlockEntity(BlockView view) {
-		return MRegister.ALLOY_FURNACE_ENTITY.instantiate();
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return MRegister.ALLOY_FURNACE_ENTITY.instantiate(pos, state);
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+		return world.isClient ? null : checkType(type, MRegister.ALLOY_FURNACE_ENTITY, (w, p, s, be) -> be.tick());
 	}
 
 	@Override

@@ -17,8 +17,8 @@ public class BreakerEntity extends AbstractSteamEntity {
 
 	boolean extended = false;
 
-	public BreakerEntity() {
-		super(MRegister.BREAKER_ENTITY);
+	public BreakerEntity(BlockPos pos, BlockState state) {
+		super(MRegister.BREAKER_ENTITY, pos, state);
 	}
 
 	@Override
@@ -54,14 +54,14 @@ public class BreakerEntity extends AbstractSteamEntity {
 	}
 
 	@Override
-	public void fromTag(BlockState state, CompoundTag tag) {
-		super.fromTag(state, tag);
+	public void readNbt(CompoundTag tag) {
+		super.readNbt(tag);
 		extended = tag.getBoolean("extended");
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public CompoundTag writeNbt(CompoundTag tag) {
 		tag.putBoolean("extended", extended);
-		return super.toTag(tag);
+		return super.writeNbt(tag);
 	}
 }

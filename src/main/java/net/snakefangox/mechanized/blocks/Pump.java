@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import net.snakefangox.mechanized.MRegister;
 import net.snakefangox.mechanized.blocks.entity.PumpEntity;
 
-public class Pump extends Block implements BlockEntityProvider, AttributeProvider {
+public class Pump extends BlockWithEntity implements AttributeProvider {
 
 	private static final VoxelShape MAIN_BOX = VoxelShapes.cuboid(0.2, 0, 0.2, 0.8, 1, 0.8);
 	private VoxelShape BOX_N = VoxelShapes.cuboid(0.35, 0.6, 0, 0.65, 0.9, 0.5);
@@ -67,8 +67,8 @@ public class Pump extends Block implements BlockEntityProvider, AttributeProvide
 	}
 
 	@Override
-	public BlockEntity createBlockEntity(BlockView view) {
-		return MRegister.PUMP_ENTITY.instantiate();
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return MRegister.PUMP_ENTITY.instantiate(pos, state);
 	}
 
 	@Override

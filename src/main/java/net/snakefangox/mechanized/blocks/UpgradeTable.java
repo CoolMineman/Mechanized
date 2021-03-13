@@ -1,16 +1,12 @@
 package net.snakefangox.mechanized.blocks;
 
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.EnchantingTableBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.text.LiteralText;
@@ -23,8 +19,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.snakefangox.mechanized.MRegister;
-import net.snakefangox.mechanized.gui.AlloyFurnaceContainer;
 import net.snakefangox.mechanized.gui.UpgradeTableContainer;
 
 public class UpgradeTable extends Block {
