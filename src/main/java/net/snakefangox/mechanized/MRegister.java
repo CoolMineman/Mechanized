@@ -2,7 +2,6 @@ package net.snakefangox.mechanized;
 
 import java.util.function.ToIntFunction;
 
-import com.google.common.base.Supplier;
 import net.snakefangox.mechanized.blocks.AlloyFurnace;
 import net.snakefangox.mechanized.blocks.Breaker;
 import net.snakefangox.mechanized.blocks.Fan;
@@ -57,7 +56,6 @@ import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.enchantment.KnockbackEnchantment;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -77,9 +75,9 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.entity.FabricEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 
@@ -194,7 +192,7 @@ public class MRegister {
 			new Identifier(Mechanized.MODID, "flying_block"),
 			FabricEntityTypeBuilder
 					.create(SpawnGroup.MISC, (EntityType.EntityFactory<FlyingBlockEntity>) FlyingBlockEntity::new)
-					.size(EntityDimensions.fixed(1, 1)).build());
+					.dimensions(EntityDimensions.fixed(1, 1)).build());
 
 	public static void registerEverything() {
 		if (Mechanized.config.enableOres) {

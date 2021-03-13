@@ -14,7 +14,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.text.LiteralText;
@@ -24,9 +23,6 @@ import net.snakefangox.mechanized.MRegister;
 import net.snakefangox.mechanized.items.Upgradable;
 import net.snakefangox.mechanized.networking.PacketIdentifiers;
 import net.snakefangox.mechanized.parts.StandardInventory;
-import net.snakefangox.mechanized.steam.SteamItem;
-
-import java.awt.event.ContainerListener;
 
 public class UpgradeTableContainer extends SyncedGuiDescription {
 	public static final ItemStack CLOSED = new ItemStack(Items.BARRIER);

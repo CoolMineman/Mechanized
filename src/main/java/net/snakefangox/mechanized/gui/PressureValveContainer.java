@@ -63,7 +63,7 @@ public class PressureValveContainer extends SyncedGuiDescription {
 	public void close(PlayerEntity player) {
 		super.close(player);
 		try {
-			int value = Integer.valueOf(pressure.getText());
+			int value = Integer.parseInt(pressure.getText());
 			if (value >= 0 && value <= 100 && ventPos != null) {
 				PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
 				passedData.writeBlockPos(ventPos);

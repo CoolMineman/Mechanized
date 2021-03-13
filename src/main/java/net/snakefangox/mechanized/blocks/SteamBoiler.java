@@ -9,7 +9,6 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.HorizontalFacingBlock;
@@ -59,7 +58,7 @@ public class SteamBoiler extends BlockWithEntity implements AttributeProvider {
 
 		BlockEntity be = world.getBlockEntity(pos);
 		ItemStack heldItem = player.getStackInHand(hand);
-		if (be != null && be instanceof AbstractSteamBoilerEntity) {
+		if (be instanceof AbstractSteamBoilerEntity) {
 			AbstractSteamBoilerEntity sb = (AbstractSteamBoilerEntity) be;
 			if (heldItem.getItem() == Items.WATER_BUCKET) {
 				FluidVolume fluid = new FluidVolume(FluidKeys.WATER, FluidAmount.BUCKET) {

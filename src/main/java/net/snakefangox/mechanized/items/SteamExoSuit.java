@@ -99,7 +99,7 @@ public class SteamExoSuit extends ArmorItem implements SteamItem, Upgradable {
 				int armorAmp = 0;
 				for (int i = 0; i < player.getInventory().armor.size(); i++) {
 					if (player.getInventory().armor.get(slot).getItem() instanceof SteamExoSuit) {
-						armorAmp += (Integer) ((Upgradable) MRegister.STEAM_EXOSUIT_CHEST)
+						armorAmp += (Integer) MRegister.STEAM_EXOSUIT_CHEST
 										.getUpgradeFromStack(player.getInventory().armor.get(i))[0];
 					}
 				}

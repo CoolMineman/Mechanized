@@ -165,7 +165,7 @@ public class SteamPipeNetworkStorage extends PersistentState {
 		for (PipeNetwork net : pipe_networks) {
 			count++;
 			if (net != null) {
-				value += "Index:" + String.valueOf(count) + " " + net.toString() + " \n ";
+				value += "Index:" + count + " " + net.toString() + " \n ";
 				nonNullCount++;
 			}
 		}
@@ -246,7 +246,7 @@ public class SteamPipeNetworkStorage extends PersistentState {
 
 		@Override
 		public String toString() {
-			return network.toString() + " Amount: " + String.valueOf(steamAmount);
+			return network.toString() + " Amount: " + steamAmount;
 		}
 	}
 

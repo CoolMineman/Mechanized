@@ -91,6 +91,7 @@ public class SteamPipe extends BlockWithEntity implements Waterloggable {
 				fluidState.getFluid() == Fluids.WATER);
 	}
 
+	@Override
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState neighborState,
 			WorldAccess world, BlockPos pos, BlockPos neighborPos) {
 		boolean isWaterlogged = state.get(Properties.WATERLOGGED);
@@ -156,6 +157,7 @@ public class SteamPipe extends BlockWithEntity implements Waterloggable {
 				.with(CONNECTED_DOWN, down instanceof Steam && ((Steam) down).canPipeConnect(Direction.UP));
 	}
 
+	@Override
 	public FluidState getFluidState(BlockState state) {
 		return (Boolean) state.get(Properties.WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
 	}
